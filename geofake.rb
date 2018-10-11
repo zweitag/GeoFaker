@@ -20,4 +20,4 @@ module GeoFaker
   end
 end
 
-puts GeoFaker.get_center(ARGV[0])
+File.write('data.js', "loadData(#{[ GeoFaker.get_center(ARGV[0]) ].to_json});")
