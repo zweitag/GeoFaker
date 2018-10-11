@@ -16,8 +16,20 @@ module GeoFaker
     data = JSON.parse(response.body)
     raise "No matching result." if data.empty?
 
-    data.first.slice('lat', 'lon')
+    data.first.slice('lat', 'lon').transform_values(&:to_f)
+  end
+
+  def self.randomize_around(centerCoordinates, count: 20)
+    lat = centerCoordinates['lat']
+    lon = centerCoordinates['lon']
+
+    (1..count).map do |_|
+      {
+        'lat': lat + rand * 4 - 2,
+        'lon': lon + rand * 2 - 1
+      }
+    end
   end
 end
 
-File.write('data.js', "loadData(#{[ GeoFaker.get_center(ARGV[0]) ].to_json});")
+File.write('data.js', "loadData(#{GeoFaker.randomize_around(GeoFaker.get_center(ARGV[0])).to_json});")
