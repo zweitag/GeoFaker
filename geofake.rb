@@ -4,7 +4,13 @@ require 'json'
 module GeoFaker
   BASE_URL = 'https://nominatim.openstreetmap.org/search'
 
-  def self.get_center(query)
+  @@geo_data = {}
+
+  def self.geo_data(query)
+    @@geo_data[query] ||= load_geo_data(query)
+  end
+
+  def self.load_geo_data(query)
     response = RestClient.get(BASE_URL, params: {
       q: query,
       format: 'json',
@@ -15,13 +21,13 @@ module GeoFaker
 
     data = JSON.parse(response.body)
     raise "No matching result." if data.empty?
-
-    data.first.slice('lat', 'lon').transform_values(&:to_f)
+    data.first
   end
 
-  def self.randomize_around(centerCoordinates, count: 100)
-    lat = centerCoordinates['lat']
-    lon = centerCoordinates['lon']
+  def self.randomize_around(query, count: 100)
+    data = geo_data(query)
+    lat = data['lat'].to_f
+    lon = data['lon'].to_f
 
     (1..count).map do |_|
       {
@@ -32,4 +38,4 @@ module GeoFaker
   end
 end
 
-File.write('data.js', "loadData(#{GeoFaker.randomize_around(GeoFaker.get_center(ARGV[0])).to_json});")
+File.write('data.js', "loadData(#{GeoFaker.randomize_around(ARGV[0]).to_json});")
