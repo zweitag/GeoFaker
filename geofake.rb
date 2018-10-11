@@ -19,14 +19,14 @@ module GeoFaker
     data.first.slice('lat', 'lon').transform_values(&:to_f)
   end
 
-  def self.randomize_around(centerCoordinates, count: 20)
+  def self.randomize_around(centerCoordinates, count: 100)
     lat = centerCoordinates['lat']
     lon = centerCoordinates['lon']
 
     (1..count).map do |_|
       {
-        'lat': lat + rand * 4 - 2,
-        'lon': lon + rand * 2 - 1
+        'lat': lat + rand * 6 - 3,
+        'lon': lon + rand * 8 - 4
       }
     end
   end
