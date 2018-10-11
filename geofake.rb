@@ -36,6 +36,23 @@ module GeoFaker
       }
     end
   end
+
+  def self.randomize_within_bounds(query, count: 200)
+    data = geo_data(query)
+    bounds = data['boundingbox'].map(&:to_f)
+
+    south = bounds[0]
+    north = bounds[1]
+    west = bounds[2]
+    east = bounds[3]
+
+    (1..count).map do |_|
+      {
+        'lat': rand(south..north),
+        'lon': rand(west..east)
+      }
+    end
+  end
 end
 
-File.write('data.js', "loadData(#{GeoFaker.randomize_around(ARGV[0]).to_json});")
+File.write('data.js', "loadData(#{GeoFaker.randomize_within_bounds(ARGV[0]).to_json});")
