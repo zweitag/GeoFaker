@@ -9,9 +9,15 @@ function loadData(data) {
   const group = L.featureGroup();
   group.addTo(map);
 
-  data.forEach(({lat, lon}) => {
+  data.points.forEach(({lat, lon}) => {
     L.marker([lat, lon]).addTo(group)
   });
+
+  const bounds = data.bounds;
+  L.rectangle([
+    [bounds[0], bounds[2]],
+    [bounds[1], bounds[3]],
+  ]).addTo(map);
 
   map.fitBounds(group.getBounds().pad(0.5));
 }
