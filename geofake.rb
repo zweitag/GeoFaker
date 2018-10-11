@@ -11,11 +11,13 @@ module GeoFaker
       limit: 1
     })
 
-    raise 'fuu' unless response.code == 200
+    raise "API error: #{response.code}" unless response.code == 200
 
     data = JSON.parse(response.body)
+    raise "No matching result." if data.empty?
+
     data.first.slice('lat', 'lon')
   end
 end
 
-puts GeoFaker.get_center('Deutschland')
+puts GeoFaker.get_center(ARGV[0])
