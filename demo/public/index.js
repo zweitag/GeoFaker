@@ -23,5 +23,5 @@ function loadData(data) {
 }
 
 window.onload = () => {
-  fetch('/api/test').then(resp => resp.json()).then(loadData);
+  fetch('/api/within?q=Münster').then(resp => resp.json()).then(loadData);
 };

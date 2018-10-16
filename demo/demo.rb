@@ -1,11 +1,14 @@
 require 'sinatra'
+require_relative '../src/geofaker'
 
 set :public_folder, File.dirname(__FILE__) + '/public'
 
-get '/api/test' do
+get '/api/within' do
   content_type :json
-  {
-    bounds: [41, 51, -5, 9],
-    points: [{ lat: 43, lon: 0 }],
+
+  query = params[:q]
+  return {
+    bounds: GeoFaker.geo_data(query)['boundingbox'],
+    points: GeoFaker.randomize_within_bounds(query),
   }.to_json
 end
