@@ -26,5 +26,5 @@ function loadData(data) {
 
 window.onload = () => {
   // Call the api indicated in the URL along with the query parameters and display the result.
-  fetch(`/api/${location.pathname}${location.search}`).then(resp => resp.json()).then(loadData);
+  fetch(`/api${location.pathname}${location.search}`).then(resp => resp.json()).then(loadData);
 };
