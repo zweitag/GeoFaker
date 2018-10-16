@@ -21,3 +21,7 @@ function loadData(data) {
 
   map.fitBounds(group.getBounds().pad(0.5));
 }
+
+window.onload = () => {
+  fetch('/api/test').then(resp => resp.json()).then(loadData);
+};
