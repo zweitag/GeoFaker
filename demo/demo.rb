@@ -12,3 +12,11 @@ get '/api/within' do
     points: GeoFaker.randomize_within_bounds(query),
   }.to_json
 end
+
+# Allow calling api methods without the /api, to render a map in which the
+# result of the respective api call will be visualised
+get '/*' do
+  pass if request.path_info.start_with?('/api')
+  content_type :html
+  send_file(File.dirname(__FILE__) + '/public/index.html')
+end
