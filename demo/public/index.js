@@ -13,11 +13,13 @@ function loadData(data) {
     L.marker([lat, lon]).addTo(group)
   });
 
-  const bounds = data.bounds;
-  L.rectangle([
-    [bounds[0], bounds[2]],
-    [bounds[1], bounds[3]],
-  ]).addTo(map);
+  if (data.bounds) {
+    const bounds = data.bounds;
+    L.rectangle([
+      [bounds[0], bounds[2]],
+      [bounds[1], bounds[3]],
+    ]).addTo(group);
+  }
 
   map.fitBounds(group.getBounds().pad(0.5));
 }
