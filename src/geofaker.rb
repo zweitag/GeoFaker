@@ -54,8 +54,3 @@ module GeoFaker
     end
   end
 end
-
-File.write('data.js', "loadData(#{{
-  bounds: GeoFaker.geo_data(ARGV[0])['boundingbox'].map(&:to_f),
-  points: GeoFaker.randomize_within_bounds(ARGV[0])
-}.to_json});")
