@@ -15,7 +15,7 @@ module GeoFaker
       q: query,
       format: 'json',
       limit: 1,
-      polygon_geojson: with_polygon,
+      polygon_geojson: with_polygon ? '1' : '0',
     })
 
     raise "API error: #{response.code}" unless response.code == 200
