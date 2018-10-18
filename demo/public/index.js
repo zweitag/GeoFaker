@@ -21,6 +21,10 @@ function loadData(data) {
     ]).addTo(group);
   }
 
+  if (data.geojson) {
+    L.geoJSON(data.geojson).addTo(group);
+  }
+
   map.fitBounds(group.getBounds().pad(0.5));
 }
 

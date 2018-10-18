@@ -7,6 +7,19 @@ get '/api/within' do
   content_type :json
 
   query = params[:q]
+
+  data = GeoFaker.geo_data(query, with_polygon: true)
+
+  return {
+    geojson: data['geojson'],
+    points: [ data.slice('lat', 'lon') ],
+  }.to_json
+end
+
+get '/api/within_bounds' do
+  content_type :json
+
+  query = params[:q]
   return {
     bounds: GeoFaker.geo_data(query)['boundingbox'],
     points: GeoFaker.randomize_within_bounds(query),
