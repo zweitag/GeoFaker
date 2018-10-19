@@ -1,5 +1,6 @@
 require 'rest-client'
 require 'json'
+require 'pry'
 
 module GeoFaker
   BASE_URL = 'https://nominatim.openstreetmap.org/search'
@@ -32,8 +33,8 @@ module GeoFaker
 
     (1..count).map do |_|
       {
-        'lat': lat + rand * 6 - 3,
-        'lon': lon + rand * 8 - 4
+        lat: lat + rand * 6 - 3,
+        lon: lon + rand * 8 - 4
       }
     end
   end
@@ -53,5 +54,47 @@ module GeoFaker
         'lon': rand(west..east)
       }
     end
+  end
+
+  def self.randomize_within(query, count: 200)
+    data = geo_data(query, with_polygon: true)
+
+    bounds = data['boundingbox'].map(&:to_f)
+    south = bounds[0]
+    north = bounds[1]
+    west = bounds[2]
+    east = bounds[3]
+
+    geojson = data['geojson']
+    raise 'geojson is not Polygon' unless geojson['type'] == 'Polygon'
+    outer_poly = geojson['coordinates'][0]
+
+    (1..count).map do |_|
+      {
+        'lat': rand(south..north),
+        'lon': rand(west..east)
+      }
+    end.select {|c| point_in_poly(outer_poly, c) }
+  end
+
+  def self.point_in_poly(poly, point)
+    last_point = poly[-1]
+    oddNodes = false
+    y = point[:lon]
+    x = point[:lat]
+
+    poly.each do |p|
+      yi = p[0]
+      xi = p[1]
+      yj = last_point[0]
+      xj = last_point[1]
+      if yi < y && yj >= y ||
+          yj < y && yi >= y
+        oddNodes = !oddNodes if xi + (y - yi) / (yj - yi) * (xj - xi) < x
+      end
+      last_point = p
+    end
+
+    oddNodes
   end
 end

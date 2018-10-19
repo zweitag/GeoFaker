@@ -12,7 +12,7 @@ get '/api/within' do
 
   return {
     geojson: data['geojson'],
-    points: [ data.slice('lat', 'lon') ],
+    points: GeoFaker.randomize_within(query),
   }.to_json
 end
 
