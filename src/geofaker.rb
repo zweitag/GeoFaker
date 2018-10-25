@@ -1,7 +1,7 @@
+require_relative 'geo_transform'
 require 'rest-client'
 require 'json'
 require 'pry'
-require_relative 'geo_transform'
 
 module GeoFaker
   BASE_URL = 'https://nominatim.openstreetmap.org/search'
@@ -27,16 +27,15 @@ module GeoFaker
     data.first
   end
 
-  def self.randomize_around(query, count: 100)
+  def self.randomize_around(query, radius_in_km:, count: 100)
     data = geo_data(query)
     lat = data['lat'].to_f
     lon = data['lon'].to_f
 
     (1..count).map do |_|
-      delta_km = 10
       delta_lat, delta_lon = gaussian(
-        GeoTransform.km_to_degree_lat(delta_km),
-        GeoTransform.km_to_degree_lon(delta_km, lat),
+        GeoTransform.km_to_degree_lat(radius_in_km),
+        GeoTransform.km_to_degree_lon(radius_in_km, lat),
       )
 
       {

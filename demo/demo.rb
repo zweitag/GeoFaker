@@ -30,8 +30,10 @@ get '/api/around' do
   content_type :json
 
   query = params[:q]
+  radius = (params[:radius] || 10).to_i
+
   return {
-    points: GeoFaker.randomize_around(query)
+    points: GeoFaker.randomize_around(query, radius_in_km: radius),
   }.to_json
 end
 
