@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'json'
 require 'pry'
+require_relative 'geo_transform'
 
 module GeoFaker
   BASE_URL = 'https://nominatim.openstreetmap.org/search'
@@ -32,20 +33,24 @@ module GeoFaker
     lon = data['lon'].to_f
 
     (1..count).map do |_|
-      delta_x, delta_y = gaussian(1)
+      delta_km = 10
+      delta_lat, delta_lon = gaussian(
+        GeoTransform.km_to_degree_lat(delta_km),
+        GeoTransform.km_to_degree_lon(delta_km, lat),
+      )
+
       {
-        lat: lat + delta_x,
-        lon: lon + delta_y,
+        lat: lat + delta_lat,
+        lon: lon + delta_lon,
       }
     end
   end
 
-  def self.gaussian(stddev)
+  def self.gaussian(stddev_x, stddev_y)
     theta = 2 * Math::PI * rand
     rho = Math.sqrt(-2 * Math.log(1 - rand))
-    scale = stddev * rho
-    x = scale * Math.cos(theta)
-    y = scale * Math.sin(theta)
+    x = stddev_x * rho * Math.cos(theta)
+    y = stddev_y * rho * Math.sin(theta)
     [x, y]
   end
 
