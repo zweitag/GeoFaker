@@ -32,11 +32,21 @@ module GeoFaker
     lon = data['lon'].to_f
 
     (1..count).map do |_|
+      delta_x, delta_y = gaussian(1)
       {
-        lat: lat + rand * 6 - 3,
-        lon: lon + rand * 8 - 4
+        lat: lat + delta_x,
+        lon: lon + delta_y,
       }
     end
+  end
+
+  def self.gaussian(stddev)
+    theta = 2 * Math::PI * rand
+    rho = Math.sqrt(-2 * Math.log(1 - rand))
+    scale = stddev * rho
+    x = scale * Math.cos(theta)
+    y = scale * Math.sin(theta)
+    [x, y]
   end
 
   def self.randomize_within_bounds(query, count: 200)
