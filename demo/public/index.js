@@ -25,6 +25,16 @@ function loadData(data) {
     L.geoJSON(data.geojson).addTo(group);
   }
 
+  if (data.circle) {
+    L.circle(
+      [
+        data.circle.center.lat,
+        data.circle.center.lon,
+      ],
+      data.circle.radius * 1000,
+    ).addTo(group);
+  }
+
   map.fitBounds(group.getBounds().pad(0.5));
 }
 

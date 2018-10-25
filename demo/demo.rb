@@ -31,9 +31,14 @@ get '/api/around' do
 
   query = params[:q]
   radius = (params[:radius] || 10).to_i
+  count = (params[:count] || 100).to_i
 
   return {
-    points: GeoFaker.randomize_around(query, radius_in_km: radius),
+    points: GeoFaker.randomize_around(query, radius_in_km: radius, count: count),
+    circle: {
+      center: GeoFaker.geo_data(query).slice('lat', 'lon'),
+      radius: radius,
+    },
   }.to_json
 end
 
