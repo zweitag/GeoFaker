@@ -30,7 +30,7 @@ get '/api/around' do
   content_type :json
 
   query = params[:q]
-  radius = (params[:radius] || 10).to_i
+  radius = (params[:radius] || 10).to_f
   count = (params[:count] || 100).to_i
 
   return {
