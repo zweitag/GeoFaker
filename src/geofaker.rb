@@ -1,3 +1,4 @@
+require_relative 'geo_transform'
 require 'rest-client'
 require 'json'
 require 'pry'
@@ -26,17 +27,30 @@ module GeoFaker
     data.first
   end
 
-  def self.randomize_around(query, count: 100)
+  def self.randomize_around(query, radius_in_km:, count: 100)
     data = geo_data(query)
     lat = data['lat'].to_f
     lon = data['lon'].to_f
 
     (1..count).map do |_|
+      delta_lat, delta_lon = gaussian(
+        GeoTransform.km_to_degree_lat(radius_in_km),
+        GeoTransform.km_to_degree_lon(radius_in_km, lat),
+      )
+
       {
-        lat: lat + rand * 6 - 3,
-        lon: lon + rand * 8 - 4
+        lat: lat + delta_lat,
+        lon: lon + delta_lon,
       }
     end
+  end
+
+  def self.gaussian(stddev_x, stddev_y)
+    theta = 2 * Math::PI * rand
+    rho = Math.sqrt(-2 * Math.log(1 - rand))
+    x = stddev_x * rho * Math.cos(theta)
+    y = stddev_y * rho * Math.sin(theta)
+    [x, y]
   end
 
   def self.randomize_within_bounds(query, count: 200)
