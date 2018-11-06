@@ -33,10 +33,11 @@ module GeoFaker
     lon = data['lon'].to_f
 
     (1..count).map do |_|
-      delta_lat, delta_lon = gaussian(
-        GeoTransform.km_to_degree_lat(radius_in_km),
-        GeoTransform.km_to_degree_lon(radius_in_km, lat),
-      )
+      angle = 2 * Math::PI * rand()
+      distance = radius_in_km * gaussian_rand()
+
+      delta_lat = GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
+      delta_lon = GeoTransform.km_to_degree_lon(distance * Math.sin(angle), lat)
 
       {
         lat: lat + delta_lat,
@@ -45,12 +46,12 @@ module GeoFaker
     end
   end
 
-  def self.gaussian(stddev_x, stddev_y)
+  def self.gaussian_rand
     theta = 2 * Math::PI * rand
     rho = Math.sqrt(-2 * Math.log(1 - rand))
-    x = stddev_x * rho * Math.cos(theta)
-    y = stddev_y * rho * Math.sin(theta)
-    [x, y]
+    x = rho * Math.cos(theta)
+    #y = rho * Math.sin(theta)
+    x
   end
 
   def self.randomize_within_bounds(query, count: 200)
