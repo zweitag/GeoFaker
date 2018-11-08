@@ -1,4 +1,5 @@
-require_relative 'geo_transform'
+require 'geo_faker/geo_transform'
+require 'geo_faker/version'
 require 'rest-client'
 require 'json'
 require 'pry'

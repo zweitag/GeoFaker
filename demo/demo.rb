@@ -1,5 +1,5 @@
 require 'sinatra'
-require_relative '../src/geofaker'
+require 'geo_faker'
 
 set :public_folder, File.dirname(__FILE__) + '/public'
 
