@@ -1,0 +1,49 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://nominatim.openstreetmap.org/search?format=json&limit=1&polygon_geojson=0&q=M%C3%BCnster
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.3p105
+      Host:
+      - nominatim.openstreetmap.org
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 08 Nov 2018 17:36:34 GMT
+      Server:
+      - Apache/2.4.29 (Ubuntu)
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - OPTIONS,GET
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Expect-Ct:
+      - max-age=0, report-uri="https://openstreetmap.report-uri.com/r/d/ct/reportOnly"
+      Upgrade:
+      - h2
+      Connection:
+      - Upgrade, close
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - application/json; charset=UTF-8
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        W3sicGxhY2VfaWQiOiIxOTgyODc3ODgiLCJsaWNlbmNlIjoiRGF0YSDCqSBPcGVuU3RyZWV0TWFwIGNvbnRyaWJ1dG9ycywgT0RiTCAxLjAuIGh0dHBzOlwvXC9vc20ub3JnXC9jb3B5cmlnaHQiLCJvc21fdHlwZSI6InJlbGF0aW9uIiwib3NtX2lkIjoiNjI1OTEiLCJib3VuZGluZ2JveCI6WyI1MS44NDAxNDQ4IiwiNTIuMDYwMDI1MSIsIjcuNDczNzg1MyIsIjcuNzc0MzYzNCJdLCJsYXQiOiI1MS45NTAxMzE3IiwibG9uIjoiNy42MTMzMDE2NTAyNjExOSIsImRpc3BsYXlfbmFtZSI6Ik3DvG5zdGVyLCBSZWdpZXJ1bmdzYmV6aXJrIE3DvG5zdGVyLCBOb3JkcmhlaW4tV2VzdGZhbGVuLCBEZXV0c2NobGFuZCIsImNsYXNzIjoiYm91bmRhcnkiLCJ0eXBlIjoiYWRtaW5pc3RyYXRpdmUiLCJpbXBvcnRhbmNlIjowLjc0NjM1NjM5Njc4NjUxMiwiaWNvbiI6Imh0dHBzOlwvXC9ub21pbmF0aW0ub3BlbnN0cmVldG1hcC5vcmdcL2ltYWdlc1wvbWFwaWNvbnNcL3BvaV9ib3VuZGFyeV9hZG1pbmlzdHJhdGl2ZS5wLjIwLnBuZyJ9XQ==
+    http_version: 
+  recorded_at: Thu, 08 Nov 2018 17:36:34 GMT
+recorded_with: VCR 4.0.0

@@ -4,7 +4,11 @@ RSpec.describe GeoFaker do
   end
 
   describe 'randomize_within_bounds' do
-    subject { described_class.randomize_within_bounds('Münster', count: 5) }
+    subject do
+      VCR.use_cassette("münster") do
+        described_class.randomize_within_bounds('Münster', count: 5)
+      end
+    end
 
     let(:south) { 51.8401448 }
     let(:north) { 52.0600251 }
