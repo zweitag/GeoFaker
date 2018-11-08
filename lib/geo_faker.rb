@@ -66,8 +66,8 @@ module GeoFaker
 
     (1..count).map do |_|
       {
-        'lat': rand(south..north),
-        'lon': rand(west..east)
+        lat: rand(south..north),
+        lon: rand(west..east),
       }
     end
   end
