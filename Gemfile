@@ -1,7 +1,6 @@
-ruby IO.read('.ruby-version').strip
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gem 'rest-client'
-gem 'sinatra'
+git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
-gem 'pry'
+# Specify your gem's dependencies in geo_faker.gemspec
+gemspec

@@ -1,4 +1,5 @@
-require_relative 'geo_transform'
+require 'geo_faker/geo_transform'
+require 'geo_faker/version'
 require 'rest-client'
 require 'json'
 require 'pry'
@@ -65,8 +66,8 @@ module GeoFaker
 
     (1..count).map do |_|
       {
-        'lat': rand(south..north),
-        'lon': rand(west..east)
+        lat: rand(south..north),
+        lon: rand(west..east),
       }
     end
   end
