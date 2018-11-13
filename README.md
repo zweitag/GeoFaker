@@ -30,7 +30,7 @@ This repository includes a demo server which helps visualizing the results of th
 
 After installing all the dependencies, run
 
-   $ bundle exec ruby demo/demo.rb
+    $ bundle exec ruby demo/demo.rb
 
 This will start a sinatra server locally on port 4567.
 You can now visit URLs like http://localhost:4567/around?q=Paris.
