@@ -74,7 +74,7 @@ module GeoFaker
     }
   end
 
-  def self.randomize_within(query, count: 200)
+  def self.within(query)
     data = geo_data(query, with_polygon: true)
 
     bounds = data['boundingbox'].map(&:to_f)
@@ -87,12 +87,14 @@ module GeoFaker
     raise 'geojson is not Polygon' unless geojson['type'] == 'Polygon'
     outer_poly = geojson['coordinates'][0]
 
-    (1..count).map do |_|
-      {
+    loop do
+      point = {
         'lat': rand(south..north),
         'lon': rand(west..east)
       }
-    end.select {|c| point_in_poly(outer_poly, c) }
+
+      return point if point_in_poly(outer_poly, point)
+    end
   end
 
   def self.point_in_poly(poly, point)
