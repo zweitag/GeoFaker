@@ -16,8 +16,8 @@ RSpec.describe GeoFaker do
     let(:west) { 7.4737853 }
 
     it 'returns a point within bounding box' do
-      expect(subject[:lat]).to be_between(south, north)
-      expect(subject[:lon]).to be_between(west, east)
+      expect(subject.lat).to be_between(south, north)
+      expect(subject.lon).to be_between(west, east)
     end
   end
 
@@ -34,8 +34,8 @@ RSpec.describe GeoFaker do
     let(:west) { 7.4737853 }
 
     it 'returns a point within bounding box' do
-      expect(subject[:lat]).to be_between(south, north)
-      expect(subject[:lon]).to be_between(west, east)
+      expect(subject.lat).to be_between(south, north)
+      expect(subject.lon).to be_between(west, east)
     end
   end
 
@@ -52,8 +52,8 @@ RSpec.describe GeoFaker do
     let(:west) { 7.5695773 }
 
     it 'returns a point in a box of 3*radius edge length around center' do
-      expect(subject[:lat]).to be_between(south, north)
-      expect(subject[:lon]).to be_between(west, east)
+      expect(subject.lat).to be_between(south, north)
+      expect(subject.lon).to be_between(west, east)
     end
   end
 end

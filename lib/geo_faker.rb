@@ -1,5 +1,6 @@
-require 'geo_faker/geo_transform'
 require 'geo_faker/version'
+require 'geo_faker/geo_transform'
+require 'geo_faker/point'
 require 'rest-client'
 require 'json'
 require 'pry'
@@ -47,10 +48,10 @@ module GeoFaker
     delta_lat = GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
     delta_lon = GeoTransform.km_to_degree_lon(distance * Math.sin(angle), lat)
 
-    {
+    Point.new(
       lat: lat + delta_lat,
       lon: lon + delta_lon,
-    }
+    )
   end
 
   def self.gaussian_rand
@@ -70,10 +71,10 @@ module GeoFaker
     west = bounds[2]
     east = bounds[3]
 
-    {
+    Point.new(
       lat: rand(south..north),
       lon: rand(west..east),
-    }
+    )
   end
 
   def self.within(query)
@@ -90,10 +91,10 @@ module GeoFaker
     outer_poly = geojson['coordinates'][0]
 
     loop do
-      point = {
-        'lat': rand(south..north),
-        'lon': rand(west..east)
-      }
+      point = Point.new(
+        lat: rand(south..north),
+        lon: rand(west..east),
+      )
 
       return point if point_in_poly(outer_poly, point)
     end
@@ -102,8 +103,8 @@ module GeoFaker
   def self.point_in_poly(poly, point)
     last_point = poly[-1]
     oddNodes = false
-    y = point[:lon]
-    x = point[:lat]
+    y = point.lon
+    x = point.lat
 
     poly.each do |p|
       yi = p[0]
