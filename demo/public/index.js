@@ -42,6 +42,15 @@ function loadData(data) {
       data.circle.radius * 1000 * 2,
       { opacity: 0.4 },
     ).addTo(group);
+
+    L.circle(
+      [
+        data.circle.center.lat,
+        data.circle.center.lon,
+      ],
+      data.circle.radius * 1000 * 3,
+      { opacity: 0.2 },
+    ).addTo(group);
   }
 
   map.fitBounds(group.getBounds().pad(0.5));

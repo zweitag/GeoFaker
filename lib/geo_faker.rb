@@ -32,23 +32,25 @@ module GeoFaker
     data.first
   end
 
-  def self.randomize_around(query, radius_in_km:, count: 100)
+  def self.around(query, radius_in_km:)
     data = geo_data(query)
     lat = data['lat'].to_f
     lon = data['lon'].to_f
 
-    (1..count).map do |_|
-      angle = 2 * Math::PI * rand()
+    angle = 2 * Math::PI * rand()
+    distance = nil
+    loop do
       distance = radius_in_km * gaussian_rand()
-
-      delta_lat = GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
-      delta_lon = GeoTransform.km_to_degree_lon(distance * Math.sin(angle), lat)
-
-      {
-        lat: lat + delta_lat,
-        lon: lon + delta_lon,
-      }
+      break if distance.abs < 3 * radius_in_km
     end
+
+    delta_lat = GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
+    delta_lon = GeoTransform.km_to_degree_lon(distance * Math.sin(angle), lat)
+
+    {
+      lat: lat + delta_lat,
+      lon: lon + delta_lon,
+    }
   end
 
   def self.gaussian_rand

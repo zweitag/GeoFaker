@@ -37,7 +37,7 @@ get '/api/around' do
   count = (params[:count] || 100).to_i
 
   return {
-    points: GeoFaker.randomize_around(query, radius_in_km: radius, count: count),
+    points: (1..count).map {|_| GeoFaker.around(query, radius_in_km: radius) },
     circle: {
       center: GeoFaker.geo_data(query).slice('lat', 'lon'),
       radius: radius,
