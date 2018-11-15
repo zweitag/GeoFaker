@@ -11,6 +11,10 @@ module GeoFaker
 
   def self.geo_data(query, with_polygon: false)
     @@geo_data[query] ||= load_geo_data(query, with_polygon: with_polygon)
+    if with_polygon && !@@geo_data[query].key?('geojson')
+      @@geo_data[query] = load_geo_data(query, with_polygon: with_polygon)
+    end
+    @@geo_data[query]
   end
 
   def self.load_geo_data(query, with_polygon: false)
