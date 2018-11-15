@@ -22,7 +22,7 @@ get '/api/within_bounds' do
   query = params[:q]
   return {
     bounds: GeoFaker.geo_data(query)['boundingbox'],
-    points: GeoFaker.randomize_within_bounds(query),
+    points: (1..count).map {|_| GeoFaker.within_bounds(query) },
   }.to_json
 end
 
