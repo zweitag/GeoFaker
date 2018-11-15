@@ -55,7 +55,7 @@ module GeoFaker
     x
   end
 
-  def self.randomize_within_bounds(query, count: 200)
+  def self.within_bounds(query)
     data = geo_data(query)
     bounds = data['boundingbox'].map(&:to_f)
 
@@ -64,12 +64,10 @@ module GeoFaker
     west = bounds[2]
     east = bounds[3]
 
-    (1..count).map do |_|
-      {
-        lat: rand(south..north),
-        lon: rand(west..east),
-      }
-    end
+    {
+      lat: rand(south..north),
+      lon: rand(west..east),
+    }
   end
 
   def self.randomize_within(query, count: 200)

@@ -3,10 +3,10 @@ RSpec.describe GeoFaker do
     expect(GeoFaker::VERSION).not_to be nil
   end
 
-  describe 'randomize_within_bounds' do
+  describe 'within_bounds' do
     subject do
       VCR.use_cassette("münster") do
-        described_class.randomize_within_bounds('Münster', count: 5)
+        described_class.within_bounds('Münster')
       end
     end
 
@@ -15,15 +15,9 @@ RSpec.describe GeoFaker do
     let(:east) { 7.7743634 }
     let(:west) { 7.4737853 }
 
-    it 'returns 5 points' do
-      expect(subject.count).to eql(5)
-    end
-
-    it 'all points within bounding box' do
-      subject.each do |point|
-        expect(point[:lat]).to be_between(south, north)
-        expect(point[:lon]).to be_between(west, east)
-      end
+    it 'returns a point within bounding box' do
+      expect(subject[:lat]).to be_between(south, north)
+      expect(subject[:lon]).to be_between(west, east)
     end
   end
 end
