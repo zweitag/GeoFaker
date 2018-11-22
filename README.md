@@ -18,6 +18,30 @@ Or install it yourself as:
 
 ## Usage
 
+### Around
+Pick a random point around the center of the given location.
+The distance of these points to the center follows a normal distribution with the given radius *r* as standard deviation σ.
+To avoid extreme outliers, we do not allow any points with a distance greater than *3r*.
+This means roughly 68% of points will be inside of the given radius and roughly 95% of points will be within a *2r*.
+```ruby
+require 'geo_faker'
+
+point = GeoFaker.around('Alter Fischmarkt 12, Münster', radius_in_km: 1)
+=> #<Point:0x000055b93554c4c0 @lat=51.96598262572216, @lon=7.630330692658974>
+point.lat
+=> 51.96598262572216
+point.lon
+=> 7.630330692658974
+```
+
+### Within
+Pick a random, uniformly distributed point within the boundary polygon reported by the Nominatim API.
+Currently this only works for places with exactly one boundary polygon. This means, it does not work for countries with exclaves or islands for now.
+```ruby
+GeoFaker.within('Allwetterzoo')
+=> #<Point:0x000055b9354e8c90 @lat=51.94596285994424, @lon=7.591793493383972>
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

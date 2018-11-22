@@ -9,10 +9,11 @@ get '/api/within' do
   query = params[:q]
 
   data = GeoFaker.geo_data(query, with_polygon: true)
+  count = (params[:count] || 100).to_i
 
   return {
     geojson: data['geojson'],
-    points: GeoFaker.randomize_within(query),
+    points: (1..count).map {|_| GeoFaker.within(query) },
   }.to_json
 end
 
@@ -20,9 +21,11 @@ get '/api/within_bounds' do
   content_type :json
 
   query = params[:q]
+  count = (params[:count] || 100).to_i
+
   return {
     bounds: GeoFaker.geo_data(query)['boundingbox'],
-    points: GeoFaker.randomize_within_bounds(query),
+    points: (1..count).map {|_| GeoFaker.within_bounds(query) },
   }.to_json
 end
 
@@ -34,7 +37,7 @@ get '/api/around' do
   count = (params[:count] || 100).to_i
 
   return {
-    points: GeoFaker.randomize_around(query, radius_in_km: radius, count: count),
+    points: (1..count).map {|_| GeoFaker.around(query, radius_in_km: radius) },
     circle: {
       center: GeoFaker.geo_data(query).slice('lat', 'lon'),
       radius: radius,

@@ -1,5 +1,6 @@
-require 'geo_faker/geo_transform'
 require 'geo_faker/version'
+require 'geo_faker/geo_transform'
+require 'geo_faker/point'
 require 'rest-client'
 require 'json'
 require 'pry'
@@ -11,6 +12,10 @@ module GeoFaker
 
   def self.geo_data(query, with_polygon: false)
     @@geo_data[query] ||= load_geo_data(query, with_polygon: with_polygon)
+    if with_polygon && !@@geo_data[query].key?('geojson')
+      @@geo_data[query] = load_geo_data(query, with_polygon: with_polygon)
+    end
+    @@geo_data[query]
   end
 
   def self.load_geo_data(query, with_polygon: false)
@@ -28,23 +33,25 @@ module GeoFaker
     data.first
   end
 
-  def self.randomize_around(query, radius_in_km:, count: 100)
+  def self.around(query, radius_in_km:)
     data = geo_data(query)
     lat = data['lat'].to_f
     lon = data['lon'].to_f
 
-    (1..count).map do |_|
-      angle = 2 * Math::PI * rand()
+    angle = 2 * Math::PI * rand()
+    distance = nil
+    loop do
       distance = radius_in_km * gaussian_rand()
-
-      delta_lat = GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
-      delta_lon = GeoTransform.km_to_degree_lon(distance * Math.sin(angle), lat)
-
-      {
-        lat: lat + delta_lat,
-        lon: lon + delta_lon,
-      }
+      break if distance.abs < 3 * radius_in_km
     end
+
+    delta_lat = GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
+    delta_lon = GeoTransform.km_to_degree_lon(distance * Math.sin(angle), lat)
+
+    Point.new(
+      lat: lat + delta_lat,
+      lon: lon + delta_lon,
+    )
   end
 
   def self.gaussian_rand
@@ -55,7 +62,7 @@ module GeoFaker
     x
   end
 
-  def self.randomize_within_bounds(query, count: 200)
+  def self.within_bounds(query)
     data = geo_data(query)
     bounds = data['boundingbox'].map(&:to_f)
 
@@ -64,15 +71,13 @@ module GeoFaker
     west = bounds[2]
     east = bounds[3]
 
-    (1..count).map do |_|
-      {
-        lat: rand(south..north),
-        lon: rand(west..east),
-      }
-    end
+    Point.new(
+      lat: rand(south..north),
+      lon: rand(west..east),
+    )
   end
 
-  def self.randomize_within(query, count: 200)
+  def self.within(query)
     data = geo_data(query, with_polygon: true)
 
     bounds = data['boundingbox'].map(&:to_f)
@@ -85,19 +90,21 @@ module GeoFaker
     raise 'geojson is not Polygon' unless geojson['type'] == 'Polygon'
     outer_poly = geojson['coordinates'][0]
 
-    (1..count).map do |_|
-      {
-        'lat': rand(south..north),
-        'lon': rand(west..east)
-      }
-    end.select {|c| point_in_poly(outer_poly, c) }
+    loop do
+      point = Point.new(
+        lat: rand(south..north),
+        lon: rand(west..east),
+      )
+
+      return point if point_in_poly(outer_poly, point)
+    end
   end
 
   def self.point_in_poly(poly, point)
     last_point = poly[-1]
     oddNodes = false
-    y = point[:lon]
-    x = point[:lat]
+    y = point.lon
+    x = point.lat
 
     poly.each do |p|
       yi = p[0]
