@@ -128,6 +128,26 @@ module GeoFaker
           ])
         end
       end
+
+      describe '#contains_point' do
+        let(:multi_polygon) { MultiPolygon.from_geojson(geojson) }
+
+        it 'returns true for point inside first polygon' do
+          expect(multi_polygon.contains_point(Point.new(lat: 30, lon: 30))).to be(true)
+        end
+
+        it 'returns true for point inside second polygon' do
+          expect(multi_polygon.contains_point(Point.new(lat: 10, lon: 20))).to be(true)
+        end
+
+        it 'returns false for point between polygons' do
+          expect(multi_polygon.contains_point(Point.new(lat: 20, lon: 20))).to be(false)
+        end
+
+        it 'returns false for point outside of everything' do
+          expect(multi_polygon.contains_point(Point.new(lat: 50, lon: 80))).to be(false)
+        end
+      end
     end
   end
 end

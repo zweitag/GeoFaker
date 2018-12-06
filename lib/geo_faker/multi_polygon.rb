@@ -16,7 +16,7 @@ module GeoFaker
     end
 
     def contains_point(point)
-      point_in_poly(coordinates[0][0], point)
+      coordinates.any? { |polygon| point_in_poly(polygon[0], point) }
     end
 
     private
@@ -24,8 +24,8 @@ module GeoFaker
     def point_in_poly(poly, point)
       last_point = poly[-1]
       oddNodes = false
-      y = point.lon
-      x = point.lat
+      y = point.lon.to_f
+      x = point.lat.to_f
 
       poly.each do |p|
         yi = p[0]
