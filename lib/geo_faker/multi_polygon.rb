@@ -7,7 +7,12 @@ module GeoFaker
     end
 
     def self.from_geojson(geojson)
-      MultiPolygon.new([geojson['coordinates']])
+      case geojson.fetch('type')
+      when 'MultiPolygon'
+        MultiPolygon.new(geojson.fetch('coordinates'))
+      when 'Polygon'
+        MultiPolygon.new([geojson.fetch('coordinates')])
+      end
     end
 
     def contains_point(point)

@@ -1,7 +1,7 @@
 require 'geo_faker/multi_polygon'
 require 'geo_faker/point'
 
-# Test data taken from https://de.wikipedia.org/wiki/GeoJSON
+# Test data taken from https://en.wikipedia.org/wiki/GeoJSON
 # on 6th of December 2018. The different polygons are drawn there.
 module GeoFaker
   RSpec.describe MultiPolygon do
@@ -91,6 +91,41 @@ module GeoFaker
 
         it 'returns TRUE [sic] for point inside of the hole' do
           expect(multi_polygon.contains_point(Point.new(lat: 30, lon: 30))).to be(true)
+        end
+      end
+    end
+
+    context 'with MultiPolygon with two polygons without holes' do
+      let(:geojson) do
+        JSON.parse(<<~JSON)
+	  {
+	    "type": "MultiPolygon", 
+	    "coordinates": [
+	      [
+	        [[30, 20], [45, 40], [10, 40], [30, 20]]
+	      ], 
+	      [
+	        [[15, 5], [40, 10], [10, 20], [5, 10], [15, 5]]
+	      ]
+	    ]
+	  }
+        JSON
+      end
+
+      describe '#from_geojson' do
+        subject { MultiPolygon.from_geojson(geojson) }
+
+        it_behaves_like 'a factory method'
+
+        it 'imports the MultiPolygon coordinates' do
+          expect(subject).to have_attributes(coordinates: [
+	    [
+	      [[30, 20], [45, 40], [10, 40], [30, 20]]
+	    ], 
+	    [
+	      [[15, 5], [40, 10], [10, 20], [5, 10], [15, 5]]
+	    ]
+          ])
         end
       end
     end
