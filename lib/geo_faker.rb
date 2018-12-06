@@ -1,5 +1,6 @@
 require 'geo_faker/version'
 require 'geo_faker/geo_transform'
+require 'geo_faker/multi_polygon'
 require 'geo_faker/point'
 require 'rest-client'
 require 'json'
@@ -87,8 +88,8 @@ module GeoFaker
     east = bounds[3]
 
     geojson = data['geojson']
-    raise 'geojson is not Polygon' unless geojson['type'] == 'Polygon'
-    outer_poly = geojson['coordinates'][0]
+    raise 'geojson must be either Polygon or MultiPolygon' unless ['Polygon', 'MultiPolygon'].include?(geojson['type'])
+    multi_polygon = MultiPolygon.from_geojson(geojson)
 
     loop do
       point = Point.new(
@@ -96,7 +97,7 @@ module GeoFaker
         lon: rand(west..east),
       )
 
-      return point if point_in_poly(outer_poly, point)
+      return point if multi_polygon.contains_point(point)
     end
   end
 
