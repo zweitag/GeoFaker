@@ -1,5 +1,6 @@
 require 'geo_faker/version'
 require 'geo_faker/geo_transform'
+require 'geo_faker/polygon_with_holes'
 require 'geo_faker/multi_polygon'
 require 'geo_faker/point'
 require 'rest-client'
@@ -97,7 +98,7 @@ module GeoFaker
         lon: rand(west..east),
       )
 
-      return point if multi_polygon.contains_point(point)
+      return point if multi_polygon.contains_point?(point)
     end
   end
 
