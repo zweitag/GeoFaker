@@ -6,13 +6,22 @@ module GeoFaker
     end
 
     def contains_point?(point)
+      point_in_polygon(outer_polygon, point) &&
+        inner_polygons.none? {|inner_polygon| point_in_polygon(inner_polygon, point) }
+    end
+
+    private
+
+    attr_reader :outer_polygon, :inner_polygons
+
+    def point_in_polygon(polygon, point)
       point_in_polygon = false
 
-      last_point = outer_polygon[-1]
+      last_point = polygon[-1]
       y = point.lon.to_f
       x = point.lat.to_f
 
-      outer_polygon.each do |p|
+      polygon.each do |p|
         yi = p[0]
         xi = p[1]
         yj = last_point[0]
@@ -26,9 +35,5 @@ module GeoFaker
 
       point_in_polygon
     end
-
-    private
-
-    attr_reader :outer_polygon, :inner_polygons
   end
 end
