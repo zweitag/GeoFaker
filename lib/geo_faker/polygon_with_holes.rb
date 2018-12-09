@@ -1,5 +1,7 @@
 module GeoFaker
   class PolygonWithHoles
+    attr_reader :outer_polygon, :inner_polygons
+
     def initialize(polygon_with_holes)
       @outer_polygon = polygon_with_holes[0]
       @inner_polygons = polygon_with_holes.slice(1..-1)
@@ -11,8 +13,6 @@ module GeoFaker
     end
 
     private
-
-    attr_reader :outer_polygon, :inner_polygons
 
     def point_in_polygon(polygon, point)
       point_in_polygon = false

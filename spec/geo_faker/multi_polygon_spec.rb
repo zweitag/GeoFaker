@@ -1,4 +1,5 @@
 require 'geo_faker/multi_polygon'
+require 'geo_faker/polygon_with_holes'
 require 'geo_faker/point'
 
 # Test data taken from https://en.wikipedia.org/wiki/GeoJSON
@@ -28,11 +29,12 @@ module GeoFaker
 
         it_behaves_like 'a factory method'
 
-        it 'converts to MultiPolygon by wrapping the coordinate list in another array' do
-          expect(subject).to have_attributes(coordinates: [
-            [
-              [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]]
-            ]
+        it 'converts to MultiPolygon with a single PolygonWithHoles without inner_polygonsby wrapping the coordinate list in another array' do
+          expect(subject).to have_attributes(polygons: [
+            a_kind_of(PolygonWithHoles).and(an_object_having_attributes(
+              outer_polygon: [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]],
+              inner_polygons: []
+            )),
           ])
         end
       end
@@ -68,12 +70,12 @@ module GeoFaker
 
         it_behaves_like 'a factory method'
 
-        it 'converts to MultiPolygon by wrapping the coordinate list in another array' do
-          expect(subject).to have_attributes(coordinates: [
-            [
-              [[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]],
-              [[20, 30], [35, 35], [30, 20], [20, 30]]
-            ]
+        it 'converts to MultiPolygon with a single PolygonWithHoles' do
+          expect(subject).to have_attributes(polygons: [
+            a_kind_of(PolygonWithHoles).and(an_object_having_attributes(
+              outer_polygon: [[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]],
+              inner_polygons: [ [[20, 30], [35, 35], [30, 20], [20, 30]] ],
+            )),
           ])
         end
       end
@@ -117,14 +119,16 @@ module GeoFaker
 
         it_behaves_like 'a factory method'
 
-        it 'imports the MultiPolygon coordinates' do
-          expect(subject).to have_attributes(coordinates: [
-            [
-              [[30, 20], [45, 40], [10, 40], [30, 20]]
-            ],
-            [
-              [[15, 5], [40, 10], [10, 20], [5, 10], [15, 5]]
-            ]
+        it 'imports the MultiPolygon with two PolygonWithHoles without inner_polygons' do
+          expect(subject).to have_attributes(polygons: [
+            a_kind_of(PolygonWithHoles).and(an_object_having_attributes(
+              outer_polygon: [[30, 20], [45, 40], [10, 40], [30, 20]],
+              inner_polygons: [],
+            )),
+            a_kind_of(PolygonWithHoles).and(an_object_having_attributes(
+              outer_polygon: [[15, 5], [40, 10], [10, 20], [5, 10], [15, 5]],
+              inner_polygons: [],
+            )),
           ])
         end
       end

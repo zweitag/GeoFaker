@@ -1,5 +1,7 @@
 module GeoFaker
   class MultiPolygon
+    attr_reader :polygons
+
     def self.from_geojson(geojson)
       case geojson.fetch('type')
       when 'MultiPolygon'
@@ -14,8 +16,6 @@ module GeoFaker
     end
 
     private
-
-    attr_reader :polygons
 
     def initialize(polygons)
       @polygons = polygons.map {|polygon_with_holes| PolygonWithHoles.new(polygon_with_holes) }
