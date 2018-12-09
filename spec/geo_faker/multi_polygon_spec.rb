@@ -91,8 +91,8 @@ module GeoFaker
           expect(multi_polygon.contains_point?(Point.new(lat: 10, lon: 40))).to be(false)
         end
 
-        it 'returns TRUE [sic] for point inside of the hole' do
-          expect(multi_polygon.contains_point?(Point.new(lat: 30, lon: 30))).to be(true)
+        it 'returns false for point inside of the hole' do
+          expect(multi_polygon.contains_point?(Point.new(lat: 30, lon: 30))).to be(false)
         end
       end
     end
