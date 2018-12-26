@@ -4,9 +4,6 @@ require 'geo_faker/geometry/geo_transform'
 require 'geo_faker/geometry/polygon_with_holes'
 require 'geo_faker/geometry/multi_polygon'
 require 'geo_faker/geometry/point'
-require 'rest-client'
-require 'json'
-require 'pry'
 
 module GeoFaker
   def self.around(query, radius_in_km:)

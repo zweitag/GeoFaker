@@ -2,6 +2,7 @@ require 'geo_faker/geo_coding/result'
 require 'geo_faker/geometry/point'
 require 'geo_faker/geometry/bounding_box'
 require 'geo_faker/geometry/multi_polygon'
+require 'rest-client'
 
 module GeoFaker
   module GeoCoding
