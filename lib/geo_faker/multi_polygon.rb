@@ -1,10 +1,6 @@
 module GeoFaker
   class MultiPolygon
-    attr_reader :coordinates
-
-    def initialize(coordinates)
-      @coordinates = coordinates
-    end
+    attr_reader :polygons
 
     def self.from_geojson(geojson)
       case geojson.fetch('type')
@@ -15,31 +11,14 @@ module GeoFaker
       end
     end
 
-    def contains_point(point)
-      coordinates.any? { |polygon| point_in_poly(polygon[0], point) }
+    def contains_point?(point)
+      polygons.any? {|polygon_with_holes| polygon_with_holes.contains_point?(point) }
     end
 
     private
 
-    def point_in_poly(poly, point)
-      last_point = poly[-1]
-      oddNodes = false
-      y = point.lon.to_f
-      x = point.lat.to_f
-
-      poly.each do |p|
-        yi = p[0]
-        xi = p[1]
-        yj = last_point[0]
-        xj = last_point[1]
-        if yi < y && yj >= y ||
-            yj < y && yi >= y
-          oddNodes = !oddNodes if xi + (y - yi) / (yj - yi) * (xj - xi) < x
-        end
-        last_point = p
-      end
-
-      oddNodes
+    def initialize(polygons)
+      @polygons = polygons.map {|polygon_with_holes| PolygonWithHoles.new(polygon_with_holes) }
     end
   end
 end
