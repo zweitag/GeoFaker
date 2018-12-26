@@ -1,8 +1,8 @@
 require 'geo_faker/version'
-require 'geo_faker/geo_transform'
-require 'geo_faker/polygon_with_holes'
-require 'geo_faker/multi_polygon'
-require 'geo_faker/point'
+require 'geo_faker/geometry/geo_transform'
+require 'geo_faker/geometry/polygon_with_holes'
+require 'geo_faker/geometry/multi_polygon'
+require 'geo_faker/geometry/point'
 require 'rest-client'
 require 'json'
 require 'pry'
@@ -47,10 +47,10 @@ module GeoFaker
       break if distance.abs < 3 * radius_in_km
     end
 
-    delta_lat = GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
-    delta_lon = GeoTransform.km_to_degree_lon(distance * Math.sin(angle), lat)
+    delta_lat = Geometry::GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
+    delta_lon = Geometry::GeoTransform.km_to_degree_lon(distance * Math.sin(angle), lat)
 
-    Point.new(
+    Geometry::Point.new(
       lat: lat + delta_lat,
       lon: lon + delta_lon,
     )
@@ -73,7 +73,7 @@ module GeoFaker
     west = bounds[2]
     east = bounds[3]
 
-    Point.new(
+    Geometry::Point.new(
       lat: rand(south..north),
       lon: rand(west..east),
     )
@@ -90,10 +90,10 @@ module GeoFaker
 
     geojson = data['geojson']
     raise 'geojson must be either Polygon or MultiPolygon' unless ['Polygon', 'MultiPolygon'].include?(geojson['type'])
-    multi_polygon = MultiPolygon.from_geojson(geojson)
+    multi_polygon = Geometry::MultiPolygon.from_geojson(geojson)
 
     loop do
-      point = Point.new(
+      point = Geometry::Point.new(
         lat: rand(south..north),
         lon: rand(west..east),
       )
