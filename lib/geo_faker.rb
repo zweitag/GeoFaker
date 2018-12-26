@@ -101,25 +101,4 @@ module GeoFaker
       return point if multi_polygon.contains_point?(point)
     end
   end
-
-  def self.point_in_poly(poly, point)
-    last_point = poly[-1]
-    oddNodes = false
-    y = point.lon
-    x = point.lat
-
-    poly.each do |p|
-      yi = p[0]
-      xi = p[1]
-      yj = last_point[0]
-      xj = last_point[1]
-      if yi < y && yj >= y ||
-          yj < y && yi >= y
-        oddNodes = !oddNodes if xi + (y - yi) / (yj - yi) * (xj - xi) < x
-      end
-      last_point = p
-    end
-
-    oddNodes
-  end
 end
