@@ -1,44 +1,13 @@
 require 'geo_faker/version'
-require 'geo_faker/geo_transform'
-require 'geo_faker/polygon_with_holes'
-require 'geo_faker/multi_polygon'
-require 'geo_faker/point'
-require 'rest-client'
-require 'json'
-require 'pry'
+require 'geo_faker/geo_coding/coder'
+require 'geo_faker/geometry/geo_transform'
+require 'geo_faker/geometry/polygon_with_holes'
+require 'geo_faker/geometry/multi_polygon'
+require 'geo_faker/geometry/point'
 
 module GeoFaker
-  BASE_URL = 'https://nominatim.openstreetmap.org/search'
-
-  @@geo_data = {}
-
-  def self.geo_data(query, with_polygon: false)
-    @@geo_data[query] ||= load_geo_data(query, with_polygon: with_polygon)
-    if with_polygon && !@@geo_data[query].key?('geojson')
-      @@geo_data[query] = load_geo_data(query, with_polygon: with_polygon)
-    end
-    @@geo_data[query]
-  end
-
-  def self.load_geo_data(query, with_polygon: false)
-    response = RestClient.get(BASE_URL, params: {
-      q: query,
-      format: 'json',
-      limit: 1,
-      polygon_geojson: with_polygon ? '1' : '0',
-    })
-
-    raise "API error: #{response.code}" unless response.code == 200
-
-    data = JSON.parse(response.body)
-    raise "No matching result." if data.empty?
-    data.first
-  end
-
   def self.around(query, radius_in_km:)
-    data = geo_data(query)
-    lat = data['lat'].to_f
-    lon = data['lon'].to_f
+    result = GeoCoding::Coder.geo_data(query)
 
     angle = 2 * Math::PI * rand()
     distance = nil
@@ -47,12 +16,12 @@ module GeoFaker
       break if distance.abs < 3 * radius_in_km
     end
 
-    delta_lat = GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
-    delta_lon = GeoTransform.km_to_degree_lon(distance * Math.sin(angle), lat)
+    delta_lat = Geometry::GeoTransform.km_to_degree_lat(distance * Math.cos(angle))
+    delta_lon = Geometry::GeoTransform.km_to_degree_lon(distance * Math.sin(angle), result.center.lat)
 
-    Point.new(
-      lat: lat + delta_lat,
-      lon: lon + delta_lon,
+    Geometry::Point.new(
+      lat: result.center.lat + delta_lat,
+      lon: result.center.lon + delta_lon,
     )
   end
 
@@ -65,40 +34,26 @@ module GeoFaker
   end
 
   def self.within_bounds(query)
-    data = geo_data(query)
-    bounds = data['boundingbox'].map(&:to_f)
+    result = GeoCoding::Coder.geo_data(query)
+    bounds = result.bounding_box
 
-    south = bounds[0]
-    north = bounds[1]
-    west = bounds[2]
-    east = bounds[3]
-
-    Point.new(
-      lat: rand(south..north),
-      lon: rand(west..east),
+    Geometry::Point.new(
+      lat: rand(bounds.south..bounds.north),
+      lon: rand(bounds.west..bounds.east),
     )
   end
 
   def self.within(query)
-    data = geo_data(query, with_polygon: true)
-
-    bounds = data['boundingbox'].map(&:to_f)
-    south = bounds[0]
-    north = bounds[1]
-    west = bounds[2]
-    east = bounds[3]
-
-    geojson = data['geojson']
-    raise 'geojson must be either Polygon or MultiPolygon' unless ['Polygon', 'MultiPolygon'].include?(geojson['type'])
-    multi_polygon = MultiPolygon.from_geojson(geojson)
+    result = GeoCoding::Coder.geo_data(query, with_polygon: true)
+    bounds = result.bounding_box
 
     loop do
-      point = Point.new(
-        lat: rand(south..north),
-        lon: rand(west..east),
+      point = Geometry::Point.new(
+        lat: rand(bounds.south..bounds.north),
+        lon: rand(bounds.west..bounds.east),
       )
 
-      return point if multi_polygon.contains_point?(point)
+      return point if result.bounding_polygon.contains_point?(point)
     end
   end
 end

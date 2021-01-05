@@ -1,7 +1,7 @@
-require 'geo_faker/polygon_with_holes'
-require 'geo_faker/point'
+require 'geo_faker/geometry/polygon_with_holes'
+require 'geo_faker/geometry/point'
 
-RSpec.describe GeoFaker::PolygonWithHoles do
+RSpec.describe GeoFaker::Geometry::PolygonWithHoles do
   describe '#contains_point?' do
     subject { described_class.new(polygons).contains_point?(point) }
 
@@ -14,18 +14,18 @@ RSpec.describe GeoFaker::PolygonWithHoles do
 
     context 'point inside of outer polygon' do
       context 'outside its hole' do
-        let(:point) { GeoFaker::Point.new(lat: 0.5, lon: 0.5) }
+        let(:point) { GeoFaker::Geometry::Point.new(lat: 0.5, lon: 0.5) }
         it { is_expected.to be true }
       end
 
       context 'inside its hole' do
-        let(:point) { GeoFaker::Point.new(lat: 1.5, lon: 1.5) }
+        let(:point) { GeoFaker::Geometry::Point.new(lat: 1.5, lon: 1.5) }
         it { is_expected.to be false }
       end
     end
 
     context 'point outside of outer polygon' do
-      let(:point) { GeoFaker::Point.new(lat: 1.5, lon: 1.5) }
+      let(:point) { GeoFaker::Geometry::Point.new(lat: 1.5, lon: 1.5) }
       it { is_expected.to be false }
     end
   end

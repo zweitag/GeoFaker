@@ -1,5 +1,4 @@
 require 'bundler/setup'
-require 'geo_faker'
 require 'vcr'
 
 VCR.configure do |config|

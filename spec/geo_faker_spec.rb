@@ -1,3 +1,5 @@
+require 'geo_faker'
+
 RSpec.describe GeoFaker do
   it "has a version number" do
     expect(GeoFaker::VERSION).not_to be nil
