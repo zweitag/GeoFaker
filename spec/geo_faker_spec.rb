@@ -3,10 +3,10 @@ RSpec.describe GeoFaker do
     expect(GeoFaker::VERSION).not_to be nil
   end
 
-  describe 'within_bounds' do
+  describe "within_bounds" do
     subject do
       VCR.use_cassette("münster") do
-        described_class.within_bounds('Münster')
+        described_class.within_bounds("Münster")
       end
     end
 
@@ -15,16 +15,16 @@ RSpec.describe GeoFaker do
     let(:east) { 7.7743634 }
     let(:west) { 7.4737853 }
 
-    it 'returns a point within bounding box' do
+    it "returns a point within bounding box" do
       expect(subject.lat).to be_between(south, north)
       expect(subject.lon).to be_between(west, east)
     end
   end
 
-  describe 'within' do
+  describe "within" do
     subject do
       VCR.use_cassette("münster_polygon") do
-        described_class.within('Münster')
+        described_class.within("Münster")
       end
     end
 
@@ -33,16 +33,16 @@ RSpec.describe GeoFaker do
     let(:east) { 7.7743634 }
     let(:west) { 7.4737853 }
 
-    it 'returns a point within bounding box' do
+    it "returns a point within bounding box" do
       expect(subject.lat).to be_between(south, north)
       expect(subject.lon).to be_between(west, east)
     end
   end
 
-  describe 'around' do
+  describe "around" do
     subject do
       VCR.use_cassette("münster") do
-        described_class.around('Münster', radius_in_km: 1)
+        described_class.around("Münster", radius_in_km: 1)
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe GeoFaker do
     let(:east) { 7.6570260 }
     let(:west) { 7.5695773 }
 
-    it 'returns a point in a box of 3*radius edge length around center' do
+    it "returns a point in a box of 3*radius edge length around center" do
       expect(subject.lat).to be_between(south, north)
       expect(subject.lon).to be_between(west, east)
     end

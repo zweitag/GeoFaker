@@ -9,7 +9,7 @@ module GeoFaker
 
     def contains_point?(point)
       point_in_polygon(outer_polygon, point) &&
-        inner_polygons.none? {|inner_polygon| point_in_polygon(inner_polygon, point) }
+        inner_polygons.none? { |inner_polygon| point_in_polygon(inner_polygon, point) }
     end
 
     private
@@ -27,7 +27,7 @@ module GeoFaker
         yj = last_point[0]
         xj = last_point[1]
         if yi < y && yj >= y ||
-            yj < y && yi >= y
+           yj < y && yi >= y
           point_in_polygon = !point_in_polygon if xi + (y - yi) / (yj - yi) * (xj - xi) < x
         end
         last_point = p
