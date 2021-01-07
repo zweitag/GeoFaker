@@ -1,6 +1,6 @@
-require 'bundler/setup'
-require 'geo_faker'
-require 'vcr'
+require "bundler/setup"
+require "geo_faker"
+require "vcr"
 
 VCR.configure do |config|
   config.cassette_library_dir = "spec/fixtures/vcr_cassettes"

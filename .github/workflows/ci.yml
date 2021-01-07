@@ -1,6 +1,12 @@
 name: Continuous Integration
 on: push
 jobs:
+  rufo:
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+      - run: gem install rufo
+      - run: rufo --check .
   rspec:
     strategy:
       fail-fast: false
