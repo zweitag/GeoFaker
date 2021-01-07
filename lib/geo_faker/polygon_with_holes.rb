@@ -14,7 +14,7 @@ module GeoFaker
 
     private
 
-    def point_in_polygon(polygon, point)
+    def point_in_polygon(polygon, point) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       point_in_polygon = false
 
       last_point = polygon[-1]

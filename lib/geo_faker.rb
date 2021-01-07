@@ -10,7 +10,7 @@ require "pry"
 module GeoFaker
   BASE_URL = "https://nominatim.openstreetmap.org/search".freeze
 
-  @@geo_data = {}
+  @geo_data = {}
 
   def self.geo_data(query, with_polygon: false)
     @@geo_data[query] ||= load_geo_data(query, with_polygon: with_polygon)
@@ -18,7 +18,7 @@ module GeoFaker
     @@geo_data[query]
   end
 
-  def self.load_geo_data(query, with_polygon: false)
+  def self.load_geo_data(query, with_polygon: false)  # rubocop:disable Metrics/MethodLength
     response = RestClient.get(
       BASE_URL,
       params: {
@@ -36,7 +36,7 @@ module GeoFaker
     data.first
   end
 
-  def self.around(query, radius_in_km:)
+  def self.around(query, radius_in_km:) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     data = geo_data(query)
     lat = data["lat"].to_f
     lon = data["lon"].to_f
@@ -78,7 +78,7 @@ module GeoFaker
     )
   end
 
-  def self.within(query)
+  def self.within(query) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     data = geo_data(query, with_polygon: true)
 
     bounds = data["boundingbox"].map(&:to_f)
