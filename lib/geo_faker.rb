@@ -21,12 +21,15 @@ module GeoFaker
   end
 
   def self.load_geo_data(query, with_polygon: false)
-    response = RestClient.get(BASE_URL, params: {
-                                          q: query,
-                                          format: "json",
-                                          limit: 1,
-                                          polygon_geojson: with_polygon ? "1" : "0",
-                                        })
+    response = RestClient.get(
+      BASE_URL,
+      params: {
+        q: query,
+        format: "json",
+        limit: 1,
+        polygon_geojson: with_polygon ? "1" : "0",
+      },
+    )
 
     raise "API error: #{response.code}" unless response.code == 200
 

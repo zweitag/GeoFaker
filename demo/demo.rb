@@ -11,10 +11,12 @@ get "/api/within" do
   data = GeoFaker.geo_data(query, with_polygon: true)
   count = (params[:count] || 100).to_i
 
-  return {
-           geojson: data["geojson"],
-           points: (1..count).map { |_| GeoFaker.within(query) },
-         }.to_json
+  json = {
+    geojson: data["geojson"],
+    points: (1..count).map { |_| GeoFaker.within(query) },
+  }
+
+  return json.to_json
 end
 
 get "/api/within_bounds" do
@@ -23,10 +25,12 @@ get "/api/within_bounds" do
   query = params[:q]
   count = (params[:count] || 100).to_i
 
-  return {
-           bounds: GeoFaker.geo_data(query)["boundingbox"],
-           points: (1..count).map { |_| GeoFaker.within_bounds(query) },
-         }.to_json
+  json = {
+    bounds: GeoFaker.geo_data(query)["boundingbox"],
+    points: (1..count).map { |_| GeoFaker.within_bounds(query) },
+  }
+
+  return json.to_json
 end
 
 get "/api/around" do
@@ -36,13 +40,15 @@ get "/api/around" do
   radius = (params[:radius] || 10).to_f
   count = (params[:count] || 100).to_i
 
-  return {
-           points: (1..count).map { |_| GeoFaker.around(query, radius_in_km: radius) },
-           circle: {
-             center: GeoFaker.geo_data(query).slice("lat", "lon"),
-             radius: radius,
-           },
-         }.to_json
+  json = {
+    points: (1..count).map { |_| GeoFaker.around(query, radius_in_km: radius) },
+    circle: {
+      center: GeoFaker.geo_data(query).slice("lat", "lon"),
+      radius: radius,
+    },
+  }
+
+  return json.to_json
 end
 
 # Allow calling api methods without the /api, to render a map in which the
