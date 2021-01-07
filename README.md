@@ -70,11 +70,12 @@ They generally correspond to one public `GeoFaker` method and pass the query par
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/zweitag/GeoFaker. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-We use [Rufo](https://github.com/ruby-formatter/rufo) to ensure a consistent code style. You can check your code locally by running:
+We use [Rufo](https://github.com/ruby-formatter/rufo) and [Rubocop](https://rubocop.org/) to ensure a consistent code style. You can check your code locally by running:
 
 ```ruby
 gem install rufo rubocop rubocop-performance rubocop-rspec
 rufo --check . # Or `rufo .` for auto-correction
+rubocop --parallel
 ```
 
 ## License
