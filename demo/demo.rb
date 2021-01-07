@@ -1,7 +1,7 @@
 require "sinatra"
 require "geo_faker"
 
-set :public_folder, File.dirname(__FILE__) + "/public"
+set :public_folder, "#{File.dirname(__FILE__)}/public"
 
 get "/api/within" do
   content_type :json
@@ -56,5 +56,5 @@ end
 get "/*" do
   pass if request.path_info.start_with?("/api")
   content_type :html
-  send_file(File.dirname(__FILE__) + "/public/index.html")
+  send_file("#{File.dirname(__FILE__)}/public/index.html")
 end

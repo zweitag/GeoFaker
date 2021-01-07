@@ -26,10 +26,7 @@ module GeoFaker
         xi = p[1]
         yj = last_point[0]
         xj = last_point[1]
-        if yi < y && yj >= y ||
-           yj < y && yi >= y
-          point_in_polygon = !point_in_polygon if xi + (y - yi) / (yj - yi) * (xj - xi) < x
-        end
+        point_in_polygon = !point_in_polygon if (yi < y && yj >= y || yj < y && yi >= y) && (xi + (y - yi) / (yj - yi) * (xj - xi) < x)
         last_point = p
       end
 
