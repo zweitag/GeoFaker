@@ -4,7 +4,7 @@ require "geo_faker/point"
 
 # Test data taken from https://en.wikipedia.org/wiki/GeoJSON
 # on 6th of December 2018. The different polygons are drawn there.
-module GeoFaker
+module GeoFaker # rubocop:disable Metrics/ModuleLength
   RSpec.describe MultiPolygon do
     shared_examples "a factory method" do
       it "returns a MultiPolygon object" do

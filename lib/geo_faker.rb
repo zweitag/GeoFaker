@@ -8,19 +8,17 @@ require "json"
 require "pry"
 
 module GeoFaker
-  BASE_URL = "https://nominatim.openstreetmap.org/search"
+  BASE_URL = "https://nominatim.openstreetmap.org/search".freeze
 
-  @@geo_data = {}
+  @geo_data = {}
 
   def self.geo_data(query, with_polygon: false)
-    @@geo_data[query] ||= load_geo_data(query, with_polygon: with_polygon)
-    if with_polygon && !@@geo_data[query].key?("geojson")
-      @@geo_data[query] = load_geo_data(query, with_polygon: with_polygon)
-    end
-    @@geo_data[query]
+    @geo_data[query] ||= load_geo_data(query, with_polygon: with_polygon)
+    @geo_data[query] = load_geo_data(query, with_polygon: with_polygon) if with_polygon && !@geo_data[query].key?("geojson")
+    @geo_data[query]
   end
 
-  def self.load_geo_data(query, with_polygon: false)
+  def self.load_geo_data(query, with_polygon: false)  # rubocop:disable Metrics/MethodLength
     response = RestClient.get(
       BASE_URL,
       params: {
@@ -38,15 +36,15 @@ module GeoFaker
     data.first
   end
 
-  def self.around(query, radius_in_km:)
+  def self.around(query, radius_in_km:) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     data = geo_data(query)
     lat = data["lat"].to_f
     lon = data["lon"].to_f
 
-    angle = 2 * Math::PI * rand()
+    angle = 2 * Math::PI * rand
     distance = nil
     loop do
-      distance = radius_in_km * gaussian_rand()
+      distance = radius_in_km * gaussian_rand
       break if distance.abs < 3 * radius_in_km
     end
 
@@ -62,9 +60,7 @@ module GeoFaker
   def self.gaussian_rand
     theta = 2 * Math::PI * rand
     rho = Math.sqrt(-2 * Math.log(1 - rand))
-    x = rho * Math.cos(theta)
-    #y = rho * Math.sin(theta)
-    x
+    rho * Math.cos(theta)
   end
 
   def self.within_bounds(query)
@@ -82,7 +78,7 @@ module GeoFaker
     )
   end
 
-  def self.within(query)
+  def self.within(query) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     data = geo_data(query, with_polygon: true)
 
     bounds = data["boundingbox"].map(&:to_f)
@@ -92,7 +88,7 @@ module GeoFaker
     east = bounds[3]
 
     geojson = data["geojson"]
-    raise "geojson must be either Polygon or MultiPolygon" unless ["Polygon", "MultiPolygon"].include?(geojson["type"])
+    raise "geojson must be either Polygon or MultiPolygon" unless %w[Polygon MultiPolygon].include?(geojson["type"])
     multi_polygon = MultiPolygon.from_geojson(geojson)
 
     loop do

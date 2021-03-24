@@ -2,7 +2,8 @@ lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "geo_faker/version"
 
-Gem::Specification.new do |spec|
+Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
+  spec.required_ruby_version = '>= 2.5.0'
   spec.name = "geo_faker"
   spec.version = GeoFaker::VERSION
   spec.authors = ["Simon Bungartz", "Tim Landwerth"]
@@ -14,14 +15,12 @@ Gem::Specification.new do |spec|
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-    spec.metadata["homepage_uri"] = spec.homepage
-    spec.metadata["source_code_uri"] = "https://github.com/zweitag/GeoFaker"
-    # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
-  else
-    raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
-  end
+  raise "RubyGems 2.0 or newer is required to protect against public gem pushes." unless spec.respond_to?(:metadata)
+
+  # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "https://github.com/zweitag/GeoFaker"
+  # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -35,9 +34,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rest-client"
 
   spec.add_development_dependency "bundler"
+  spec.add_development_dependency "pry"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
-  spec.add_development_dependency "pry"
   spec.add_development_dependency "sinatra"
   spec.add_development_dependency "vcr"
   spec.add_development_dependency "webmock"
